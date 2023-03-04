@@ -8,8 +8,8 @@ from os import path
 
 TOKEN = '5967901240:AAEHJhYqKpoZ1l7gv_NosAu50YNbIC9MK-I'
 
-CHANNEL_ID = -1001899049651
-CHANNEL_ID_FOR_URLS = 1899049651
+CHANNEL_ID = -1001783340499
+CHANNEL_ID_FOR_URLS = "tomikbooks"
 
 
 bot = TeleBot(TOKEN)
@@ -17,7 +17,7 @@ bot = TeleBot(TOKEN)
 if path.exists("storage.json"):
     with open("storage.json", "r", encoding="UTF-8") as file:
         main_dict = json.load(file)
-        print(main_dict)
+        # print(main_dict)
 else:
     main_dict = {    
                 "Книги": 
