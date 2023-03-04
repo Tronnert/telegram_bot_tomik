@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 from telebot import TeleBot
 from telebot import types
 import json
@@ -17,7 +19,7 @@ if path.exists("storage.json"):
         main_dict = json.load(file)
         print(main_dict)
 else:
-    main_dict = {
+    main_dict = {    
                 "Книги": 
                     {
                     "Авторы": {}, # Т_авт_Прокофьева (внутри тоже дикты) # Т_кн_Лоскутик_и_облако
