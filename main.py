@@ -78,8 +78,7 @@ def analyse_message(message):
 @bot.channel_post_handler()
 @bot.edited_channel_post_handler()
 def channel_hand(message):
-    if message.sender_chat.id == CHANNEL_ID:
-        analyse_message(message)
+    analyse_message(message)
         # bot.send_message(message.sender_chat.id, " ".join(map(str, hashtags)))
         # print(main_dict)
 
