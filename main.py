@@ -52,7 +52,7 @@ def analyse_message(message: types.Message, message_id):
     book_name = ""
     for hashtag in hashtags:
         if "Т_илл" in hashtag:
-            name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_"))).title()
+            name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
             main_dict["Иллюстраторы"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
         elif "Т_кино" in hashtag:
             name = " ".join(filter(lambda x: x != "", hashtag[7:].split("_")))
