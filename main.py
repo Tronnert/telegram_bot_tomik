@@ -43,45 +43,56 @@ else:
                 }
 
 
-def analyse_message(message: types.Message, message_id):
-    message_entities = filter(lambda x: x.type == "hashtag", message.entities)
-    hashtags = []
-    for message_entity in message_entities:
-        hashtags.append(message.text[message_entity.offset: message_entity.offset + message_entity.length])
-    hashtags.sort(reverse=True)
-    book_name = ""
-    for hashtag in hashtags:
-        if "Т_илл" in hashtag:
-            name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
-            main_dict["Иллюстраторы"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
-        elif "Т_кино" in hashtag:
-            name = " ".join(filter(lambda x: x != "", hashtag[7:].split("_")))
-            main_dict["Экранизации"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
-        elif "Т_соб" in hashtag:
-            name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
-            main_dict["События"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
-        elif "Т_лок" in hashtag:
-            name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
-            main_dict["Локации"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
-        elif "Т_кн" in hashtag:
-            name = " ".join(filter(lambda x: x != "", hashtag[5:].split("_")))
-            book_name = name
-        elif "Т_авт" in hashtag:
-            name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
-            main_dict["Книги"]["Авторы"][name] = main_dict["Книги"]["Авторы"].get(name, {}) 
-            main_dict["Книги"]["Авторы"][name].update({book_name: f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"})
-    with open("storage.json", "w", encoding="UTF-8") as file:
-        json.dump(main_dict, file)
+def analyse_message(message_text, entities, message_id):
+    # print(message)
+    if entities != None:
+        message_entities = filter(lambda x: x.type == "hashtag", entities)
+        hashtags = []
+        for message_entity in message_entities:
+            hashtags.append(message_text[message_entity.offset: message_entity.offset + message_entity.length])
+        hashtags.sort(reverse=True)
+        book_name = ""
+        for hashtag in hashtags:
+            if "Т_илл" in hashtag:
+                name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
+                main_dict["Иллюстраторы"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
+            elif "Т_кино" in hashtag:
+                name = " ".join(filter(lambda x: x != "", hashtag[7:].split("_")))
+                main_dict["Экранизации"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
+            elif "Т_соб" in hashtag:
+                name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
+                main_dict["События"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
+            elif "Т_лок" in hashtag:
+                name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
+                main_dict["Локации"][name] = f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"
+            elif "Т_кн" in hashtag:
+                name = " ".join(filter(lambda x: x != "", hashtag[5:].split("_")))
+                book_name = name
+            elif "Т_авт" in hashtag:
+                name = " ".join(filter(lambda x: x != "", hashtag[6:].split("_")))
+                main_dict["Книги"]["Авторы"][name] = main_dict["Книги"]["Авторы"].get(name, {}) 
+                main_dict["Книги"]["Авторы"][name].update({book_name: f"https://t.me/{CHANNEL_ID_FOR_URLS}/{message_id}"})
+        with open("storage.json", "w", encoding="UTF-8") as file:
+            json.dump(main_dict, file)
 
 
-@bot.channel_post_handler()
+@bot.channel_post_handler(content_types=["text", "photo"])
 @bot.edited_channel_post_handler()
 def channel_hand(message: types.Message):
-    # print(message)
+    message_text = ""
+    entities = []
+    if message.content_type == "text":
+        message_text = message.text
+        entities = message.entities
+    else:
+        message_text = message.caption
+        entities = message.caption_entities
+    # print("kkkkkkk")
     if message.sender_chat.id == CHANNEL_ID:
-        analyse_message(message, message.message_id)
+        analyse_message(message_text, entities, message.message_id)
     elif message.forward_from_chat != None and message.forward_from_chat.id == CHANNEL_ID and message.sender_chat.id == FORWARDED_CHANNEL_ID:
-        analyse_message(message, message.forward_from_message_id)
+        # print(message)
+        analyse_message(message_text, entities, message.forward_from_message_id)
 
 
 @bot.message_handler(commands=["start"])
