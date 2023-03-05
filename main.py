@@ -109,14 +109,14 @@ def callback_hand(call: types.CallbackQuery):
     action = call.data
     msg = call.message
     if "Книги" not in action and "main" not in action:
-        text = f"""{action}:\n"""
+        text = f"""<b>{action}:\n</b>"""
         for name, link in sorted(main_dict[action].items()):
             text += f'''<a href="{link}">{name}</a>\n'''
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton(text="Назад", callback_data="main"))
         bot.edit_message_text(text, chat_id=msg.chat.id, message_id=msg.message_id, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
     elif "Книги" in action:
-        text = f"""{action}:\n"""
+        text = f"""<b>{action}:\n</b>"""
         for author, books in sorted(main_dict["Книги"]["Авторы"].items()):
             text += f'''{author}:\n'''
             for name, link in sorted(books.items()):
